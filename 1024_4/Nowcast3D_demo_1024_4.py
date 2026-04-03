@@ -22,14 +22,14 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 model = MutiPhyPreNET3D().to(device)
-model.load_state_dict(torch.load("PhyPredNet_1024_4.pth", map_location=device))
+model.load_state_dict(torch.load("1024_4/PhyPredNet_1024_4.pth", map_location=device))
 
 diffusion_S = get_model_S().to(device)
-diffusion_S.load_state_dict(torch.load("Diff_Structure_1024_4.pth", map_location=device))
+diffusion_S.load_state_dict(torch.load("1024_4/Diff_Structure_1024_4.pth", map_location=device))
 diffusion_S.eval()
 
 diffusion_I = get_model_I().to(device)
-diffusion_I.load_state_dict(torch.load("Diff_Intensity_1024_4.pth", map_location=device))
+diffusion_I.load_state_dict(torch.load("1024_4/Diff_Intensity_1024_4.pth", map_location=device))
 diffusion_I.eval()
 
 
