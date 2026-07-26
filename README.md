@@ -1,100 +1,172 @@
 # Nowcast3D: Reliable Precipitation Nowcasting via Gray-Box Learning
 
-## Environment Setup
+
+## Environment setup
 
 ```bash
+git clone https://github.com/Huaguan-Chen/Nowcast3D.git
+cd Nowcast3D
+
 conda create -n nowcast3d python=3.12 -y
 conda activate nowcast3d
 ```
 
-Install PyTorch according to your CUDA version from https://pytorch.org. For example, for CUDA 12.6:
+Install PyTorch for your CUDA version from
+[pytorch.org](https://pytorch.org/). For example, for CUDA 12.6:
 
 ```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+pip install torch torchvision torchaudio \
+  --index-url https://download.pytorch.org/whl/cu126
 ```
 
-Install the remaining packages:
+Install the remaining dependencies:
 
 ```bash
-pip install matplotlib numpy tqdm scipy imageio einops
+pip install numpy scipy matplotlib "imageio[ffmpeg]" einops tqdm
 ```
 
-## Repository structure
+A CUDA-capable GPU is recommended. The `512_1` demo requires CUDA.
+
+## Checkpoints and sample data
+
+Download the public checkpoints and samples from:
+
+[Google Drive: Nowcast3D checkpoints and sample data](https://drive.google.com/drive/folders/1af1wFGhWh-tnYq6wjDp-z3lI8pZZ9sUF?usp=drive_link)
+
+The Google Drive folders map to the repository variants as follows:
+
+| Google Drive folder | Repository directory |
+|---|---|
+| `10.24-0.04 (Sample Data & ckpts)` | `1024_4` |
+| `5.12-0.01 (Sample Data & ckpts)` | `512_1` |
+| `Original Radar Data` | nationwide 3-D radar mosaic BIN files |
+
+Download the three checkpoint files from each `ckpts` folder and extract the
+sample ZIP files into the corresponding repository directory. Keep the
+checkpoint filenames unchanged.
+
+The resulting layout should be:
 
 ```text
 Nowcast3D/
 |-- README.md
-`-- 1024_4/
-    |-- Nowcast3D_demo_1024_4.py
-    |-- PhyPredNet.py
-    |-- Diff_Structure.py
-    |-- Diff_Intensity.py
-    `-- fill_data_3D.py
-```
-
-## Checkpoints and test sample
-
-The repository code and the model weights / sample folder are stored separately.
-
-Suggested layout:
-
-```text
-Nowcast3D/
-|-- README.md
-`-- 1024_4/
-    |-- Nowcast3D_demo_1024_4.py
-    |-- PhyPredNet.py
-    |-- Diff_Structure.py
-    |-- Diff_Intensity.py
+|-- Radardata2npy.py
+|-- 1024_4/
+|   |-- Nowcast3D_demo_1024_4.py
+|   |-- fill_data_3D.py
+|   |-- PhyPredNet.py
+|   |-- Diff_Intensity.py
+|   |-- Diff_Structure.py
+|   |-- ckpt-1024-4/
+|   |   |-- PhyPredNet_1024_4.pth
+|   |   |-- Diff_Intensity_1024_4.pth
+|   |   `-- Diff_Structure_1024_4.pth
+|   `-- 20250728_120000/
+|       |-- *_data.npy
+|       `-- *_mask.npy
+`-- 512_1/
+    |-- Nowcast3D_demo_512_1.py
     |-- fill_data_3D.py
-    |-- ckpt-1024-4/
-    |   |-- PhyPredNet_1024_4.pth
-    |   |-- Diff_Structure_1024_4.pth
-    |   `-- Diff_Intensity_1024_4.pth
-    `-- 20250728_120000/
-        |-- *_data.npy
-        `-- *_mask.npy
+    |-- PhyPredNet.py
+    |-- Diff_Intensity.py
+    |-- Diff_Structure.py
+    |-- ckpt-512-1/
+    |   |-- PhyPredNet_512_1.pth
+    |   |-- Diff_Intensity_512_1.pth
+    |   `-- Diff_Structure_512_1.pth
+    |-- 2025062905/
+    |-- 2025082712/
+    `-- 2025090911/
 ```
 
-You can download the sample data and model checkpoints from https://drive.google.com/drive/folders/19utD5oIJ4x-mevyG5vmJgilteYWZDlrd?usp=sharing.
+Each timestamp must have a matching pair:
 
-## Typical usage
+```text
+<timestamp>_data.npy
+<timestamp>_mask.npy
+```
 
-### 1. Fill masked low-level frames
+## Run the 1024_4 demo
 
-Edit `root_dir` in `1024_4/fill_data_3D.py`, then run:
+The default sample is `20250728_120000`. Run the commands from the `1024_4`
+directory so that the default empty `root_dir` in `fill_data_3D.py` resolves
+correctly:
 
 ```bash
-python 1024_4/fill_data_3D.py
+cd 1024_4
+python fill_data_3D.py
+python Nowcast3D_demo_1024_4.py
+cd ..
 ```
 
-Default behavior:
+The fill script reads the first 10 data/mask pairs and creates
+`20250728_120000_fill`. The demo uses those 10 filled volumes as input and the
+next 30 raw volumes as the visualization reference.
 
-- input folder: `20250728_120000`
-- output folder: `20250728_120000_fill`
+The video is written to:
 
-### 2. Run nowcasting demo
+```text
+1024_4/vis_results/20250728_120000_fill.mp4
+```
 
-Edit `root_dir`, `folder_name`, and checkpoint paths in `1024_4/Nowcast3D_demo_1024_4.py`, then run:
+To use another location or case, update `root_dir`, `input_name`, and
+`output_name` in `fill_data_3D.py`, then update `FOLDER_NAME`, `FOLDER`,
+`GT_FOLDER`, and `SAVE_DIR` in `Nowcast3D_demo_1024_4.py`.
+
+## Run the 512_1 demo
+
+The filling and forecasting steps are separate. For the default case:
 
 ```bash
-python 1024_4/Nowcast3D_demo_1024_4.py
+python 512_1/fill_data_3D.py
+python 512_1/Nowcast3D_demo_512_1.py
 ```
 
-Default behavior:
+For another released case:
 
-- input: first 10 frames
-- target for visualization: next 30 frames
-- output: an `.mp4` file in `vis_results/`
+```bash
+python 512_1/fill_data_3D.py \
+  --input-dir 512_1/2025082712 \
+  --output-dir 512_1/2025082712_fill
 
-## Important Note
+python 512_1/Nowcast3D_demo_512_1.py \
+  --input-dir 512_1/2025082712_fill \
+  --case-name 2025082712
+```
 
-> With authorization from the participating institutions, the **development and training of model configurations** were carried out across the **China Meteorological Administration Earth System Modeling and Prediction Center** and the **Tianjin Meteorological Observatory**.
->
-> We also incorporated **additional training data**.
->
-> To extend the radar reflectivity input from the original **24 x 256 x 256** to **24 x 512 x 512** while minimizing performance degradation, we **simplified the model architecture** to meet operational deployment requirements.
->
-> The system has been **deployed and is currently in operational use** in **Tianjin, Hebei, Guangxi, and other regions of China**, as well as in **Pakistan**.
->
-> Please note that the **best-performing checkpoints are used in operational deployments**. They are **confidential** and **will not be made public**.
+The final forecast is saved as `512_1/npy_results/<case>_pred.npy`.
+
+## Convert original radar files
+
+`Radardata2npy.py` reads the original nationwide networked 3-D radar mosaic
+BIN files. Each complete timestamp contains 24 vertical-level BIN files. The
+script crops the nationwide radar grid to a specified geographic region and
+saves the regional volume as paired `*_data.npy` and `*_mask.npy` files.
+
+Before running it, edit `folder_in`, `folder_out`, the date range, and the
+geographic crop near the bottom of the script:
+
+```bash
+python Radardata2npy.py
+```
+
+## Important note
+
+## Important note
+
+With authorization from the participating institutions, **data preparation
+and model training for model configurations** were carried out at
+the **China Meteorological Administration Earth System Modeling and Prediction
+Center** and the **Tianjin Meteorological Observatory**.
+
+We also incorporated **additional training data**.
+
+To extend the radar reflectivity input from the original **`24 x 256 x 256`**
+to **`24 x 512 x 512`** while minimizing performance degradation, the **model
+architecture was simplified** to meet operational deployment requirements.
+The system has been **deployed and is currently in operational use** in
+**Tianjin, Hebei, Guangxi, and other regions of China**, as well as in
+**Pakistan**.
+
+Please note that the **best-performing checkpoints are used in operational
+deployments**. They are **confidential** and **will not be made public**.
