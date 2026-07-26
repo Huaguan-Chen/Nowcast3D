@@ -7,7 +7,7 @@ class FourierEmb1D(nn.Module):
 
     def __init__(self, dim: int, lambda_min: float, lambda_max: float):
         super().__init__()
-        assert dim % 2 == 0, 
+        assert dim % 2 == 0
         half = dim // 2
         if half == 1:
             lambdas = torch.tensor([lambda_min], dtype=torch.float32)
@@ -109,7 +109,7 @@ class ComplexTransformerBranch(nn.Module):
 
     def __init__(self, channels, out_channels, num_heads=4, num_layers=4, dropout=0.1, pool_factor=2):
         super().__init__()
-        assert channels % 2 == 0, 
+        assert channels % 2 == 0
         self.proj_in = nn.Conv3d(channels, channels, kernel_size=1)
         self.pool = nn.AvgPool3d(kernel_size=(pool_factor // 2, pool_factor, pool_factor), stride=(pool_factor // 2, pool_factor, pool_factor))
         self.upsample = nn.Upsample(scale_factor=(pool_factor // 2, pool_factor, pool_factor), mode='trilinear', align_corners=False)
