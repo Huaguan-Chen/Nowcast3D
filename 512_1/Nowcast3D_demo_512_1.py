@@ -10,7 +10,7 @@ from PhyPredNet import MutiPhyPreNET3D
 HERE = Path(__file__).resolve().parent
 CKPT_DIR = HERE / 'ckpt-512-1'
 DEFAULT_INPUT_DIR = HERE / '2025062905_fill'
-DEFAULT_OUTPUT_DIR = HERE / 'npz_results'
+DEFAULT_OUTPUT_DIR = HERE / "npy_results"
 LAT_RANGE = (37.34, 42.46)
 LON_RANGE = (113.96, 119.08)
 T_IN = 10
@@ -132,8 +132,8 @@ def main() -> None:
         member_R = member_S + 0.5 * (physical - member_I)
         ensemble = remove_small_connected_regions(physical_reflectivity_mean(member_I, member_S, member_R) * y_mask_zmax)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    output = args.output_dir / f'tianjin_{case_name}_release_I_S_R_physical_mean.npz'
-    np.savez_compressed(output, pred=to_numpy(ensemble))
+    output = args.output_dir / f"{case_name}_pred.npy"
+    np.save(output, to_numpy(ensemble))
     print(f'device: {device}')
     print(f'case: {case_name}')
     print(f'saved: {output}')
