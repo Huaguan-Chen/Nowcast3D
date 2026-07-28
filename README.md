@@ -152,8 +152,6 @@ python Radardata2npy.py
 
 ## Important note
 
-## Important note
-
 With authorization from the participating institutions, **data preparation
 and model training for model configurations** were carried out at
 the **China Meteorological Administration Earth System Modeling and Prediction
