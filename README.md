@@ -157,7 +157,7 @@ and model training for model configurations** were carried out at
 the **China Meteorological Administration Earth System Modeling and Prediction
 Center** and the **Tianjin Meteorological Observatory**.
 
-We also incorporated **additional training data**.
+We also **expanded the training dataset** to support operational deployment.
 
 To extend the radar reflectivity input from the original **`24 x 256 x 256`**
 to **`24 x 512 x 512`** while minimizing performance degradation, the **model
