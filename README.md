@@ -166,5 +166,5 @@ The system has been **deployed and is currently in operational use** in
 **Tianjin, Hebei, Guangxi, and other regions of China**, as well as in
 **Pakistan**.
 
-Please note that the **best-performing checkpoints are used in operational
+Please note that the **released checkpoints is not the best-performing checkpoints**. The **best-performing checkpoints are used in operational
 deployments**. They are **confidential** and **will not be made public**.
