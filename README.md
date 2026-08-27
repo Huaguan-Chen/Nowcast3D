@@ -86,7 +86,7 @@ Each timestamp must have a matching pair:
 <timestamp>_mask.npy
 ```
 
-## Run the 1024_4 demo
+## Run the 1024_4 demo (10.24° × 10.24°, 0.04°)
 
 The default sample is `20250728_120000`. Run the commands from the `1024_4`
 directory so that the default empty `root_dir` in `fill_data_3D.py` resolves
@@ -113,7 +113,7 @@ To use another location or case, update `root_dir`, `input_name`, and
 `output_name` in `fill_data_3D.py`, then update `FOLDER_NAME`, `FOLDER`,
 `GT_FOLDER`, and `SAVE_DIR` in `Nowcast3D_demo_1024_4.py`.
 
-## Run the 512_1 demo
+## Run the 512_1 demo (5.12° × 5.12°, 0.01°)
 
 The filling and forecasting steps are separate. For the default case:
 
