@@ -1,4 +1,4 @@
-# Nowcast3D: Reliable Precipitation Nowcasting via Gray-Box Learning
+# Nowcast3D for effective precipitation nowcasting
 
 
 ## Environment setup
